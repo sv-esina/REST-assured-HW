@@ -39,7 +39,7 @@ public class WdHubTests extends TestBase{
 
     @Test
     @DisplayName("Авторизация с некорректным паролем")
-    public void enterIncorrectAuthPassStatusTest() {
+    public void enterIncorrectAuthPasswordStatusTest() {
         given()
                 .log().all()
                 .auth().basic("user1", "12345")
@@ -49,6 +49,33 @@ public class WdHubTests extends TestBase{
                 .log().all()
                 .statusCode(401)
                 .body(containsString("401 Authorization Required"));
+    }
+
+    @Test
+    @DisplayName("Авторизация с пустым паролем")
+    public void authorizationWithEmptyPasswordStatusTest() {
+        given()
+                .log().all()
+                .auth().basic("user1", "")
+                .when()
+                .get("/status")
+                .then()
+                .log().all()
+                .statusCode(401)
+                .body(containsString("401 Authorization Required"));
+    }
+
+    @Test
+    @DisplayName("Успешная авторизация")
+    public void correctAuthPassStatusTest() {
+        given()
+                .log().all()
+                .auth().basic("user1", "1234")
+                .when()
+                .get("/status")
+                .then()
+                .log().all()
+                .statusCode(200);
     }
 
     @Test
